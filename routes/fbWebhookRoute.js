@@ -1,0 +1,76 @@
+const express = require('express');
+const axios = require('axios');
+const router = express.Router();
+const { getStoredNumbers, deleteDataFromRedis } = require('../redis');
+const { sendMessageA } = require('../helper/messengerAdmin');
+
+router.post('/', async (req, res) => {
+  try {
+    const { entry } = req.body;
+
+    if (entry && entry.length > 0 && entry[0].messaging && entry[0].messaging.length > 0) {
+      const { sender: { id: senderId }, message } = entry[0].messaging[0];
+
+      if (message && message.text) {
+        let { text: query } = message;
+        console.log(`Received message from senderId: ${senderId}`);
+
+        if (query.toLowerCase().startsWith('03')) {
+          let numberToQuery = query;
+
+          const items = await getStoredNumbers(numberToQuery);
+
+          if (items.length === 0) {
+            await sendMessageA(senderId, 'No matching data found for the specified number.');
+          } else {
+            const firstItem = items[0];
+            const { number, fbid, receivedate } = firstItem;
+
+            let responseMessage = `Query result for number ${number}:\n`;
+            responseMessage += `FB ID: ${fbid}\n`;
+            responseMessage += `Received Date: ${receivedate}\n`;
+
+            await sendMessageA(senderId, responseMessage);
+            await sendMessageA(senderId, `sub ${fbid}\n 1M`);
+            await deleteDataFromRedis(numberToQuery);
+          }
+        } else if (query.toLowerCase().startsWith('sub')) {
+          const [_, fbid, subscriptionStatus] = query.split(' ');
+
+          try {
+            await axios.post('http://save1.adaptable.app/subscribe', { fbid, subscriptionStatus }, {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+            await sendMessageA(senderId, 'Subscribed successfully!');
+          } catch (error) {
+            console.error('Error subscribing user:', error);
+            await sendMessageA(senderId, 'Failed to subscribe.');
+          }
+        }
+      }
+    }
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Error handling Facebook webhook:', error);
+    res.sendStatus(500);
+  }
+});
+
+router.get('/', (req, res) => {
+  const mode = req.query['hub.mode'];
+  const token = req.query['hub.verify_token'];
+  const challenge = req.query['hub.challenge'];
+
+  if (mode && token && mode === 'subscribe' && token === process.env.VERIFY_TOKEN) {
+    res.status(200).send(challenge);
+  } else {
+    res.sendStatus(403);
+  }
+});
+
+module.exports = {
+  router,
+};
