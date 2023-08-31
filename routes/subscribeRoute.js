@@ -13,7 +13,7 @@ const { sendMessageA } = require('../helper/messengerAdmin');
 dayjs.extend(utcPlugin);
 dayjs.extend(timezonePlugin);
 dayjs.locale(frLocale);
-const adminFbid = '7270527082962896';
+const adminId = '7270527082962896';
 // Add your MongoDB connection URL here
 const mongoConnectionURL = process.env.SUB_DETAIL;
 // Define the MongoDB database and collection names
@@ -26,6 +26,7 @@ router.get('/', (req, res) => {
 router.post('/', async (req, res, next) => {
   try {
     const { fbid, subscriptionStatus } = req.body;
+    const adminFbid = req.headers.senderId || null; 
 
     console.log('Received subscription request:', { fbid, subscriptionStatus });
 
@@ -89,18 +90,26 @@ router.post('/', async (req, res, next) => {
       const message = messageParts.join('\n');
 
       await sendMessage(fbid, message);
+      const message1 = '🥰';
+      await sendMessageA(adminId, message1);      
+      
       // Format admin message 
-      const adminMessageParts = [
+      
+      if (adminFbid !== null) {       
+        const adminMessageParts = [
         `Nouvelle souscription activée :`,
         `   ID  : ${fbid} `,
         `   Type : ${T} ✨   `,
         `   Start: ${A} ⏳   `,
         `   End : ${E} ⌛   `
-      ];
-      const adminMessage = adminMessageParts.join('\n');
+        ];
+        const adminMessage = adminMessageParts.join('\n');
 
-      // Send admin message
-      await sendMessageA(adminFbid, adminMessage);
+        // Send admin message
+        await sendMessageA(adminFbid, adminMessage);
+
+      }
+
     } else {
       console.error('Failed to activate subscription.');
       res.status(500).json({ message: 'Failed to activate subscription.' });
@@ -110,7 +119,6 @@ router.post('/', async (req, res, next) => {
     next(error);
   }
 });
-
 module.exports = {
   router,
 };

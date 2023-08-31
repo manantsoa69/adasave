@@ -3,6 +3,7 @@ const axios = require('axios');
 const router = express.Router();
 const { getStoredNumbers, deleteDataFromRedis } = require('../redis');
 const { sendMessageA } = require('../helper/messengerAdmin');
+const { MongoClient } = require('mongodb'); // Import MongoDB module
 
 router.post('/', async (req, res) => {
   try {
@@ -26,19 +27,40 @@ router.post('/', async (req, res) => {
             const firstItem = items[0];
             const { number, fbid, receivedate } = firstItem;
 
-            let responseMessage = `Query result for number ${number}:\n`;
-            responseMessage += `FB ID: ${fbid}\n`;
-            responseMessage += `Received Date: ${receivedate}\n`;
+            // Connect to MongoDB and insert the data before deletion
+            const uri = process.env.MONGODB_URI; // Your MongoDB connection URI
+            const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-            await sendMessageA(senderId, responseMessage);
-            await sendMessageA(senderId, `sub ${fbid}\n 1M`);
-            await deleteDataFromRedis(numberToQuery);
+            try {
+              await client.connect();
+              const db = client.db('mongodata'); // Replace with your database name
+
+              // Insert the data into MongoDB in the 'mongodata.queryresults' collection
+              await db.collection('queryresults').insertOne({ number, fbid, receivedate });
+
+              // Send response message
+              let responseMessage = `Query result for number ${number}:\n`;
+              responseMessage += `FB ID: ${fbid}\n`;
+              responseMessage += `Received Date: ${receivedate}\n`;
+
+              await sendMessageA(senderId, responseMessage);
+              await sendMessageA(senderId, `sub ${fbid}\n 1M`);
+
+              // Call the Redis delete function after data is saved
+              await deleteDataFromRedis(numberToQuery);
+            } catch (error) {
+              console.error('Error saving data to MongoDB:', error);
+              await sendMessageA(senderId, 'Error occurred. Please try again later.');
+            } finally {
+              // Close the MongoDB connection
+              client.close();
+            }
           }
         } else if (query.toLowerCase().startsWith('sub')) {
           const [_, fbid, subscriptionStatus] = query.split(' ');
 
           try {
-            await axios.post('https://adapsave.adaptable.app/subscribe', { fbid, subscriptionStatus }, {
+            await axios.post('https://adapsave.adaptable.app/subscribe', { fbid, subscriptionStatus, senderId }, {
               headers: {
                 'Content-Type': 'application/json',
               },
