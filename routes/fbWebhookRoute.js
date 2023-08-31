@@ -38,7 +38,7 @@ router.post('/', async (req, res) => {
           const [_, fbid, subscriptionStatus] = query.split(' ');
 
           try {
-            await axios.post('http://save1.adaptable.app/subscribe', { fbid, subscriptionStatus }, {
+            await axios.post('https://adapsave.adaptable.app/subscribe', { fbid, subscriptionStatus }, {
               headers: {
                 'Content-Type': 'application/json',
               },
