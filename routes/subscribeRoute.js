@@ -19,6 +19,7 @@ const mongoConnectionURL = process.env.SUB_DETAIL;
 // Define the MongoDB database and collection names
 const dbName = 'subdetail';
 const collectionName = 'mana';
+
 router.get('/', (req, res) => {
   res.render('subscriptionForm');
 });
@@ -26,16 +27,15 @@ router.get('/', (req, res) => {
 router.post('/', async (req, res, next) => {
   try {
     const { fbid, subscriptionStatus } = req.body;
-    const adminFbid = req.headers.senderId || null; 
 
     console.log('Received subscription request:', { fbid, subscriptionStatus });
 
-    const T = subscriptionStatus; 
+    const T = subscriptionStatus;
 
-    const A = dayjs().utcOffset('+03:00').format('D MMMM YYYY, HH:mm:ss'); 
+    const A = dayjs().utcOffset('+03:00').format('D MMMM YYYY, HH:mm:ss');
 
     const expireDate = calculateExpirationDate(subscriptionStatus);
-    const E = dayjs(expireDate).utcOffset('+03:00').format('D MMMM YYYY, HH:mm:ss'); 
+    const E = dayjs(expireDate).utcOffset('+03:00').format('D MMMM YYYY, HH:mm:ss');
     const success = await saveSubscription(fbid, subscriptionStatus);
 
     if (success) {
@@ -90,33 +90,24 @@ router.post('/', async (req, res, next) => {
       const message = messageParts.join('\n');
 
       await sendMessage(fbid, message);
-      const message1 = '🥰';
-      await sendMessageA(adminId, message1);      
-      
-      // Format admin message 
-      
-      if (adminFbid !== null) {       
-        const adminMessageParts = [
-        `Nouvelle souscription activée :`,
-        `   ID  : ${fbid} `,
-        `   Type : ${T} ✨   `,
-        `   Start: ${A} ⏳   `,
-        `   End : ${E} ⌛   `
-        ];
-        const adminMessage = adminMessageParts.join('\n');
+      // Format admin message
 
-        // Send admin message
-        await sendMessageA(adminFbid, adminMessage);
-
-      }
-
+      const adminMessageParts = [
+          `Nouvelle souscription activée :`,
+          `   ID  : ${fbid} `,
+          `   Type : ${T} ✨   `,
+          `   Start: ${A} ⏳   `,
+          `   End : ${E} ⌛   `
+      ];
+      const adminMessage = adminMessageParts.join('\n');
+      await sendMessageA(adminId, adminMessage);
     } else {
       console.error('Failed to activate subscription.');
       res.status(500).json({ message: 'Failed to activate subscription.' });
     }
   } catch (error) {
     console.error('Error subscribing user:', error);
-    next(error);
+    res.status(500).json({ message: 'Error subscribing user.' });
   }
 });
 module.exports = {
