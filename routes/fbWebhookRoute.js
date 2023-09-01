@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
               responseMessage += `Received Date: ${receivedate}\n`;
 
               await sendMessageA(senderId, responseMessage);
-              await sendMessageA(senderId, `sub ${fbid}\n 1M`);
+              await sendMessageA(senderId, `sub ${fbid} 1M`);
 
               // Call the Redis delete function after data is saved
               await deleteDataFromRedis(numberToQuery);
