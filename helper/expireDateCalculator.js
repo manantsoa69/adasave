@@ -9,6 +9,8 @@ const calculateExpirationDate = (subscriptionDetails, subscriptionStatus) => {
 
   const expirationMap = {
     '1D': currentDate => currentDate.setDate(currentDate.getDate() + 1),
+    '1W': currentDate => currentDate.setDate(currentDate.getDate() + 7), // 1 week
+    '2W': currentDate => currentDate.setDate(currentDate.getDate() + 14), 
     '1M': currentDate => currentDate.setMonth(currentDate.getMonth() + 1),
     '3M': currentDate => currentDate.setMonth(currentDate.getMonth() + 3),
     '6M': currentDate => currentDate.setMonth(currentDate.getMonth() + 6),
