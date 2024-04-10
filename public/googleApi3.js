@@ -1,6 +1,5 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const NodeCache = require('node-cache');
-const { detect } = require('langdetect');
 const { askHercai, googlefirst } = require('./hercaiAI');
 const myCache = new NodeCache();
 
