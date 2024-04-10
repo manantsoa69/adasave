@@ -177,7 +177,7 @@ async function menuMesg(fbid) {
   
 async function yesNo(fbid) {
   try {
-    const messageText =  'Désirez-vous explorer notre service pendant 24 heures sans frais et tester notre bot ? Un essai gratuit vous attend ! 🌟🔓 ? \n Pour l\'activer, appuyez sur 👇 ';
+    const messageText =  'Désirez-vous explorer notre service sans frais et tester notre bot ? Un essai gratuit vous attend ! 🌟🔓 ? \n Pour l\'activer, appuyez sur 👇 ';
 
     const quickReplies = [
 //{ content_type: 'text', title: 'Mode payant 💼', payload: 'oui' },
