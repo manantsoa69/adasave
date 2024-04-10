@@ -8,8 +8,8 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_API
 
 const saveSubscription = async (fbid) => {
   //const expireSeconds = 60;//7J
-  const expireSeconds = 604800;//7J
-  //const expireSeconds = 2592000;    //30J
+  //const expireSeconds = 604800;//7J
+  const expireSeconds = 2592000;    //30J
   try {
     const exists = await redis.exists(fbid);
     if (!exists) {
