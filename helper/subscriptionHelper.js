@@ -19,7 +19,7 @@
 
   📲 Une fois le paiement effectué, veuillez nous fournir votre numéro (10 chiffres) pour la vérification.
   (Aza asina espace na soratra fa tonga dia ny numéro ihany)`;
-  const msgE =`📢 Votre abonnement a expiré. 😢 Pour continuer à bénéficier des services de notre chatbot, nous vous encourageons à renouveler votre abonnement dès maintenant. L'abonnement est disponible à partir de 2500 Ariary seulement. Si vous avez besoin de plus de détails, n'hésitez pas à nous le demander ! 💬` 
+  const msgE =`📢 Votre abonnement a expiré. 😢 Pour continuer à bénéficier des services de notre chatbot, nous vous encourageons à renouveler votre abonnement dès maintenant. L'abonnement est disponible à partir de 2 000 Ariary seulement. Si vous avez besoin de plus de détails, n'hésitez pas à nous le demander ! 💬` 
   const welcomeMsg = `Bienvenue ! 🌟 Nous sommes ravis de vous accueillir ! N'hésitez pas à explorer nos services et à poser vos questions. Nous sommes là pour vous aider. 🚀`;
   const check = async (fbid) => {
     try {
@@ -80,7 +80,7 @@
             const cacheKey = `${fbid}`;
             await redis.multi()
               .rpush(`${cacheKey}`, `E`)
-              .rpush(`${cacheKey}`, 1, '  ')
+              .rpush(`${cacheKey}`, '  ')
               .exec();// Assuming redis is defined and initialized elsewhere
             await sendMessage(fbid, msgE);
             console.log(data[0]);
