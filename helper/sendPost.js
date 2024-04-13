@@ -5,7 +5,7 @@ const { text } = require('express');
 async function generateResponse(fbid, question) {
   try {
     // URL of the FastAPI server
-    const url = 'https://de885734-65c3-4483-bdcd-18e3f56752b1-00-1pi4xwvxidlku.kirk.replit.dev:3000/generate/';
+    const url = 'https://lk-2.onrender.com/generate/';
 
     // Data to be sent in the request body
     const data = {
@@ -39,7 +39,7 @@ async function transletResponse(fbid, lastPrompt, payload) {
   console.log(payload);
   try {
     // URL of the FastAPI server
-    const url = 'https://de885734-65c3-4483-bdcd-18e3f56752b1-00-1pi4xwvxidlku.kirk.replit.dev:3000/translate/';
+    const url = 'https://lk-2.onrender.com/translate/';
 
     // Data to be sent in the request body
     const data = {
