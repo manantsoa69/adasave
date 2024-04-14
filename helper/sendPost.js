@@ -5,7 +5,7 @@ const { text } = require('express');
 async function generateResponse(fbid, question) {
   try {
     // URL of the FastAPI server
-    const url = 'https://lk-2.onrender.com/generate/';
+    const url = 'https://fine-blue-marlin-hem.cyclic.app/generate/';
 
     // Data to be sent in the request body
     const data = {
@@ -39,7 +39,7 @@ async function transletResponse(fbid, lastPrompt, payload) {
   console.log(payload);
   try {
     // URL of the FastAPI server
-    const url = 'https://lk-2.onrender.com/translate/';
+    const url = 'https://fine-blue-marlin-hem.cyclic.app/translate/';
 
     // Data to be sent in the request body
     const data = {
