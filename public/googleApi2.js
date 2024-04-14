@@ -52,8 +52,6 @@ Main topic or theme of the book
 Key ideas or arguments presented
 Chapter titles or main sections of the book with a paragraph on each
 Key takeaways or conclusions
-Comparison to other books on the same subject
-Recommendations [Other similar books on the same topic]
 To sum up: The book's biggest Takeaway and point in a singular sentence
 OUTPUT: Markdown format with #Headings, ##H2,
 ###H3, + bullet points, + sub-bullet points`;
