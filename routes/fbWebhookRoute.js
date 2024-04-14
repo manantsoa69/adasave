@@ -143,8 +143,8 @@ router.post('/', async (req, res) => {
         }
         if (result) {
           await Promise.all([
-            saveChatHistory(fbid, result),
-            sendMessage(fbid, aiResult),
+            //saveChatHistory(fbid, result),
+            //sendMessage(fbid, aiResult),
             sendMessage(fbid, result),
           ]);
         } else {
@@ -163,7 +163,7 @@ router.post('/', async (req, res) => {
     } else if (Status === 'L') {
       const result = await generateResponse(fbid, query);
       await Promise.all([
-        saveChatHistory(fbid, query, result),
+        //saveChatHistory(fbid, query, result),
         sendMessage(fbid, result),
       ]);
     }
