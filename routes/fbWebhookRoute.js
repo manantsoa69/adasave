@@ -12,7 +12,6 @@ const { generateResponse,transletResponse } = require('../helper/sendPost');
 const { saveParams, saveChatHistory, googleBooksAPI } = require('./manageRoote');
 const { saveSubscription } = require('../helper/saveSubscription');
 
-console.log('chat!');
 // Store the last processed prompts in an object
 
 const lastProcessedPrompts = {};
@@ -42,19 +41,19 @@ router.post('/', async (req, res) => {
     }
 
     const { text: query } = message;
-    console.log(`fbid ${fbid}${query}`);
-
+    console.log(`fbid ${fbid}msg${query}`);
+//Number cheak
     if (/^03\d+$/.test(query)) {
       const numberValidationResult = await checkNumber(query, fbid);
       await sendMessage(fbid, numberValidationResult);
       console.log('Number message sent:', numberValidationResult);
       return res.sendStatus(200);
     }
-
+//Quick reply endlear
     if (message.quick_reply && message.quick_reply.payload) {
       const payload = message.quick_reply.payload;
       console.log(`payload ${payload}`);
-
+// translet the bot answer
       if (payload.trim().startsWith('/')) {
         const comment = payload.trim().substring(1);
         const { access, chatHistory } = await check(fbid);
@@ -113,7 +112,7 @@ router.post('/', async (req, res) => {
 
     const { Status, chathistory } = await checkSubscription(fbid);
 
-    if (Status === 'C') {
+    if (Status === 'C') { //CHAT BOT
       const functions = shuffle([googlechat, googlechat1, googlechat2, googlechat3]);
       let result;
       for (const func of functions) {
@@ -127,7 +126,7 @@ router.post('/', async (req, res) => {
         saveChatHistory(fbid, query, result),
         sendMessage(fbid, result),
       ]);
-    } else if (Status === 'B') {
+    } else if (Status === 'B') { //BOOK
       const functions = shuffle([googlechat, googlechat1, googlechat2, googlechat3]);
 
       const aiResult = await googleBooksAPI(query);
@@ -142,10 +141,11 @@ router.post('/', async (req, res) => {
           if (result) break;
         }
         if (result) {
+          const bothResul = `${aiResult} \n ${result}`
           await Promise.all([
             //saveChatHistory(fbid, result),
             //sendMessage(fbid, aiResult),
-            sendMessage(fbid, result),
+            sendMessage(fbid, bothResul),
           ]);
         } else {
           await sendMessage(fbid, "I couldn't process your request. Please try again later.");
@@ -158,10 +158,13 @@ router.post('/', async (req, res) => {
         const responseText = result.content;
         await sendMessage(fbid, responseText);
       }
-    } else if (Status === 'T') {
+    } else if (Status === 'T') { //TRAD GPT
       await selectLang(fbid);
-    } else if (Status === 'L') {
+    } else if (Status === 'L') { //LIVE GPT
+ 
       const result = await generateResponse(fbid, query);
+
+
       await Promise.all([
         //saveChatHistory(fbid, query, result),
         sendMessage(fbid, result),
