@@ -23,7 +23,7 @@ const genAI = new GoogleGenerativeAI(getApiKey());
 const googlechat2 = async (chathistory, query, param) => {
   try {
     const generationConfig = {
-      maxOutputTokens: 1500,
+      maxOutputTokens: 2000,
       temperature: 1.0,
       topP: 0.36,
       topK: 1,
@@ -35,11 +35,11 @@ const googlechat2 = async (chathistory, query, param) => {
     let prompt;
     switch (param) {
       case 'Chat':
-        prompt = `Step into your role as an AI conversationalist, equipped with the ability to delve into past interactions.
-         Your mission: Respond accurately to the query at hand, adding value with concise yet decisive answers.
-          Utilize the provided chat history (${chathistory}) judiciously. Remember, brevity is key unless the 
-          question demands otherwise. Now, face the question posed: ${query}`;
-        break;
+        prompt = `The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context.You respond with determined responses, not really long ones
+   Current conversation:
+   ${chathistory} Human: ${query}  AI:        
+        `;
+          break;
       case 'Book':
 
         prompt =`Write a thorough yet concise summary of ${query} The language of the book title you get should define in which language you write the summary.for Example, if the boot tilte is German the summary should be in German too.
