@@ -177,11 +177,11 @@ async function menuMesg(fbid) {
   
 async function yesNo(fbid) {
   try {
-    const messageText =  'Désirez-vous explorer notre service sans frais et tester notre bot ? Un essai gratuit vous attend ! 🌟🔓 ? \n Pour l\'activer, appuyez sur 👇 ';
+    const messageText =  'Désirez-vous explorer notre service sans frais et tester notre bot ? 🌟🔓 ? \n Pour l\'activer, appuyez sur 👇 ';
 
     const quickReplies = [
 //{ content_type: 'text', title: 'Mode payant 💼', payload: 'oui' },
-     { content_type: 'text', title: 'Essai gratuit 🆓', payload: 'gratuit' }     
+     { content_type: 'text', title: 'Oui 🆓', payload: 'gratuit' }     
     ];
     await sendQuickReplyMessage(fbid, messageText, quickReplies);
   } catch (error) {

@@ -4,17 +4,17 @@
   require('dotenv').config();
   const { createClient } = require('@supabase/supabase-js'); // Import createClient function from supabase library
   const { sendMessage, yesNo } = require('./messengerApi');
-
+  const { saveSubscription } = require('./saveSubscription');
   const redis = new Redis(process.env.REDIS_URL_1);
   console.log('Redis connection established!');
   const expired = `
   📢 Offre de Renouvellement - Détails et Paiement :
 
-  🗓️ Durée : 1 Mois (24h/24) ⏰
+  🗓️ Durée : 30 J (24h/24) ⏰
   💰 Prix : 2 000 Ariary 
 
   🏧 Moyens de paiement acceptés :
-  Mvola : 038 82 686 00
+   Mvola : 038 82 686 00
   👤 Au nom de RAZAFIMANANTSOA Jean Marc.
 
   📲 Une fois le paiement effectué, veuillez nous fournir votre numéro (10 chiffres) pour la vérification.
@@ -83,18 +83,13 @@
               .rpush(`${cacheKey}`, '  ')
               .exec();// Assuming redis is defined and initialized elsewhere
             await sendMessage(fbid, msgE);
-            console.log(data[0]);
+            //console.log(data[0]);
             return 1 ;
           } else {
             console.log(`No data found in table chat_responses with fbid '${fbid}'`);
-            // Assuming saveSubscription and sendMessage functions are defined elsewhere
+            await sendMessage(fbid, welcomeMsg);
+            await yesNo(fbid); 
             //await saveSubscription(fbid);
-           // await sendMessage(fbid, "Bienvenue ! 🌟 Nous sommes ravis de vous accueillir ! N'hésitez pas à explorer nos services et à poser vos questions. Nous sommes là pour vous aider. 🚀");
-           // await yesNo(fbid);
-            await Promise.all([
-                sendMessage(fbid, welcomeMsg),
-                yesNo(fbid),
-              ]);
             return 1;
           }
         } catch (error) {

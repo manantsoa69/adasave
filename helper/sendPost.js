@@ -1,6 +1,7 @@
 const axios = require('axios');
 const { text } = require('express');
-
+const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_API_KEY);
 // Function to send a POST request to the FastAPI server
 async function generateResponse(fbid, question) {
   try {
