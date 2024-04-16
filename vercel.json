@@ -1,3 +1,4 @@
+
 {
   "version": 2,
   "builds": [
@@ -9,6 +10,11 @@
     {
       "src": "/(.*)",
       "dest": "/"
+    }
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "main": false
     }
   }
 }
