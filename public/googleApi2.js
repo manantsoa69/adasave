@@ -1,5 +1,10 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const {
+  GoogleGenerativeAI,
+  HarmCategory,
+  HarmBlockThreshold,
+} = require("@google/generative-ai");
 const NodeCache = require('node-cache');
+
 const { askHercai, googlefirst } = require('./hercaiAI');
 const myCache = new NodeCache();
 
@@ -23,23 +28,42 @@ const genAI = new GoogleGenerativeAI(getApiKey());
 const googlechat2 = async (chathistory, query, param) => {
   try {
     const generationConfig = {
-      maxOutputTokens: 2000,
+      maxOutputTokens: 1500,
       temperature: 1.0,
       topP: 0.36,
       topK: 1,
     };
+    const safetySettings = [
+      {
+        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
+    ];
 
-    const model = genAI.getGenerativeModel({ model: "gemini-pro", generationConfig });
+
+    const model = genAI.getGenerativeModel({ model: "gemini-pro", generationConfig, safetySettings });
+
     console.log(`GOOGLE2 ${param}`);
 
     let prompt;
     switch (param) {
       case 'Chat':
-        prompt = `The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context.You respond with determined responses, not really long ones
-   Current conversation:
-   ${chathistory} Human: ${query}  AI:        
-        `;
-          break;
+        prompt = `The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context.You respond with determined responses, not really long onesThe language of the human you get should define in which language you answer.for Example, if the message is German the summary should be in German too.
+         Current conversation:
+         ${chathistory} Human: ${query}  AI:`;
+        break;
       case 'Book':
 
         prompt =`Write a thorough yet concise summary of ${query} The language of the book title you get should define in which language you write the summary.for Example, if the boot tilte is German the summary should be in German too.
@@ -52,6 +76,8 @@ Main topic or theme of the book
 Key ideas or arguments presented
 Chapter titles or main sections of the book with a paragraph on each
 Key takeaways or conclusions
+Comparison to other books on the same subject
+Recommendations [Other similar books on the same topic]
 To sum up: The book's biggest Takeaway and point in a singular sentence
 OUTPUT: Markdown format with #Headings, ##H2,
 ###H3, + bullet points, + sub-bullet points`;
@@ -61,21 +87,21 @@ OUTPUT: Markdown format with #Headings, ##H2,
     }
 
     const result = await model.generateContent(prompt);
-
+    
     const response = await result.response;
 
     const content = response.text().trim();
     if (!content) {
       console.warn('GoogleGenerativeAI returned an empty response.');
       const chat = `${chathistory},Humain:${query} AI:`;
-   
+
       return await handleFallback(chat);
     }
 
     return { content };
 
   } catch (googleError) {
-  
+
     console.error('Error occurred while using GoogleGenerativeAI:');
     const chat = `${chathistory},Humain:${query} AI:`;
 
@@ -85,7 +111,7 @@ OUTPUT: Markdown format with #Headings, ##H2,
 const handleFallback = async (prompt) => {
   try {
 
-    const result = await googlefirst(prompt);
+    const result = await askHercai(prompt);
     console.log("Using OpenAI'");
     return { content: result };
   } catch (openaiError) {
