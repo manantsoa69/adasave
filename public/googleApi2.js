@@ -4,7 +4,6 @@ const {
   HarmBlockThreshold,
 } = require("@google/generative-ai");
 const NodeCache = require('node-cache');
-
 const { askHercai, googlefirst } = require('./hercaiAI');
 const myCache = new NodeCache();
 
@@ -15,7 +14,7 @@ const getApiKey = () => {
   if (cachedApiKey) {
     return cachedApiKey;
   } else {
-    const apiKey = process.env.API_KEY2; // Update to your environment variable
+    const apiKey = process.env.API_KEY3; // Update to your environment variable
     if (!apiKey) {
       throw new Error("API_KEY environment variable not found.");
     }
@@ -51,43 +50,41 @@ const googlechat2 = async (chathistory, query, param) => {
         threshold: HarmBlockThreshold.BLOCK_NONE,
       },
     ];
-
-
     const model = genAI.getGenerativeModel({ model: "gemini-pro", generationConfig, safetySettings });
-
-    console.log(`GOOGLE2 ${param}`);
+    console.log(`GOOGLE2${param}`);
 
     let prompt;
     switch (param) {
       case 'Chat':
-        prompt = `The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context.You respond with determined responses, not really long onesThe language of the human you get should define in which language you answer.for Example, if the message is German the summary should be in German too.
-         Current conversation:
-         ${chathistory} Human: ${query}  AI:`;
+        prompt = `You are a helpful chatbot engaging in a conversation with a human, providing valuable answers efficiently. Your responses are not overly lengthy but are packed with valuable insights. Your powerful capabilities enable you to answer all questions effectively.
+        
+
+Previous conversation:
+${chathistory}
+
+New human question: ${query}
+Response:"""`;
         break;
       case 'Book':
 
-        prompt =`Write a thorough yet concise summary of ${query} The language of the book title you get should define in which language you write the summary.for Example, if the boot tilte is German the summary should be in German too.
-concentrate on only the most important takeaways
-and primary points from the book that together
-will give me a solid overview and understanding of
-the book and its topic
-Include all of the following in your summary:
-Main topic or theme of the book
-Key ideas or arguments presented
-Chapter titles or main sections of the book with a paragraph on each
-Key takeaways or conclusions
-Comparison to other books on the same subject
-Recommendations [Other similar books on the same topic]
-To sum up: The book's biggest Takeaway and point in a singular sentence
-OUTPUT: Markdown format with #Headings, ##H2,
-###H3, + bullet points, + sub-bullet points`;
+        prompt =`Write a thorough yet concise summary of ${query} The language of the book title you get should define in which language you write the summary.For Example, if the book tilte is German the summary should be in German too.
+      concentrate on only the most important takeaways and primary points from the book that together will give me a solid overview and understanding of the book and its topic
+      Include all of the following in your summary:
+      Main topic or theme of the book
+      Key ideas or arguments presented
+      Chapter titles or main sections of the book with a paragraph on each
+      Key takeaways or conclusions
+      To sum up: The book's biggest Takeaway and point in a singular sentence
+      OUTPUT: Markdown format with #Headings, ##H2,
+      ###H3, + bullet points, + sub-bullet points`;
         break;
       default:
         prompt = ` ${query}`;
     }
 
     const result = await model.generateContent(prompt);
-    
+    console.log(prompt);
+
     const response = await result.response;
 
     const content = response.text().trim();
@@ -112,7 +109,7 @@ const handleFallback = async (prompt) => {
   try {
 
     const result = await askHercai(prompt);
-    console.log("Using OpenAI'");
+    console.log("Using OpenAI's chatCompletion");
     return { content: result };
   } catch (openaiError) {
     console.error('Error occurred during chatCompletion fallback:', openaiError);
