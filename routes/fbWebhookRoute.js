@@ -141,11 +141,11 @@ router.post('/', async (req, res) => {
           if (result) break;
         }
         if (result) {
-          const bothResul = `${aiResult} \n ${result}`
+         // const bothResul = `${aiResult} \n ${result}`
           await Promise.all([
             //saveChatHistory(fbid, result),
             //sendMessage(fbid, aiResult),
-            sendMessage(fbid, bothResul),
+            sendMessage(fbid, result),
           ]);
         } else {
           await sendMessage(fbid, "I couldn't process your request. Please try again later.");
