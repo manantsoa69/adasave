@@ -56,7 +56,9 @@ const googlechat = async (chathistory, query, param) => {
     let prompt;
     switch (param) { 
       case 'Chat':
-        prompt = `You are a helpful chatbot engaging in a conversation with a human, providing valuable answers efficiently. Your responses are not overly lengthy but are packed with valuable insights. Your powerful capabilities enable you to answer all questions effectively.
+        prompt = `You are a helpful chatbot engaging in a conversation with a human, providing valuable answers efficiently.
+        Your responses are not overly lengthy but are packed with valuable insights. Your powerful capabilities enable you 
+        to answer all questions effectively.
         
 
 Previous conversation:
