@@ -85,7 +85,7 @@ Response:"""`;
     }
 
     const result = await model.generateContent(prompt);
-    console.log(prompt);
+    //console.log(prompt);
 
     const response = await result.response;
 
