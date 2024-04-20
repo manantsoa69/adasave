@@ -6,7 +6,7 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_API
 async function generateResponse(fbid, question) {
   try {
     // URL of the FastAPI server
-    const url = 'https://lk-2.onrender.com/generate/';
+    const url = 'https://live-1-e9t5.onrender.com/generate/';
 
     // Data to be sent in the request body
     const data = {
@@ -23,7 +23,7 @@ async function generateResponse(fbid, question) {
 
     // Extract the response_genai property from the response data
     const responseData = response.data;
-    const responseGenai = responseData.response_genai; 
+    const responseGenai = responseData.response_genaiput; 
     //console.log(responseGenai);
     
 
@@ -40,7 +40,7 @@ async function transletResponse(fbid, lastPrompt, payload) {
   console.log(payload);
   try {
     // URL of the FastAPI server
-    const url = 'https://lk-2.onrender.com/translate/';
+    const url = 'https://live-1-e9t5.onrender.com/translate/';
 
     // Data to be sent in the request body
     const data = {
