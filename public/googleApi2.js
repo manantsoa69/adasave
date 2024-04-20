@@ -3,6 +3,7 @@ const {
   HarmCategory,
   HarmBlockThreshold,
 } = require("@google/generative-ai");
+require('dotenv').config();
 const NodeCache = require('node-cache');
 const { askHercai, googlefirst } = require('./hercaiAI');
 const myCache = new NodeCache();
