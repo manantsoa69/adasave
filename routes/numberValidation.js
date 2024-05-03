@@ -22,7 +22,7 @@ async function checkNumber(number, fbid) {
 
       return  "Nous vous prions de bien vouloir patienter pendant que nous traitons et vérifions votre paiement. 🕐 Nous vous remercions pour votre confiance.";
     } else {
-      return "Il y a un problème avec votre numéro.";
+      return "Il y a un problème avec votre numéro. Il doit commencer par 034 ou 038.";
     }
   } else if (number.length < 10) {
     return "Veuillez s'il vous plaît fournir un numéro composé exactement de 10 chiffres.";

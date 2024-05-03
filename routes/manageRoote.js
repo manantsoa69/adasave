@@ -1,8 +1,8 @@
-  const axios = require('axios');
-  require('dotenv').config();
-  const Redis = require('ioredis');
-  const redis = new Redis(process.env.REDIS_URL_1);
-  async function saveParams(fbid, save) {
+const axios = require('axios');
+require('dotenv').config();
+const Redis = require('ioredis');
+const redis = new Redis(process.env.REDIS_URL_1);
+async function saveParams(fbid, save) {
     try {
       await redis.multi()
         .lset(`${fbid}`, 0, save)
@@ -16,7 +16,7 @@
   
   async function saveChatHistory(fbid, query, result) {
     try {
-      const chatEntry = `Human:${query} AI:${result}`;
+      const chatEntry = `Humain:${query} AI:${result}`;
       await redis.multi()
         .lset(`${fbid}`, 1, chatEntry)
         .exec();
