@@ -62,7 +62,7 @@
               .exec();// Assuming redis is defined and initialized elsewhere
             
             console.log(data[0]);
-            return { Status: 'Chat' };
+            return { Status: 'C' }; 
           } else {
             console.log(`No data found in table chat_responses with fbid '${fbid}'`);
             await Promise.all([
