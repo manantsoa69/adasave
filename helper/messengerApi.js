@@ -43,12 +43,6 @@ const splitMessage = (message, maxLength) => {
   const parts = [];
   let currentPart = '';
 
-  // Check if message is an object with 'content' property
-  if (typeof message === 'object' && message.hasOwnProperty('content')) {
-    // Extract the content value
-    message = message.content;
-  }
-
   if (typeof message !== 'string') {
     console.error('Invalid message format. Expected a string. Received:', message);
     return parts;
@@ -159,7 +153,6 @@ async function selectLangtrad(fbid) {
   }
 }
 
-
 async function menuMesg(fbid) {
   try {
     const messageText =  'Quel modèle de volet utilisez-vous ?' ;
@@ -177,11 +170,14 @@ async function menuMesg(fbid) {
   
 async function yesNo(fbid) {
   try {
-    const messageText =  'Désirez-vous explorer notre service sans frais et tester notre bot ? 🌟🔓 ? \n Pour l\'activer, appuyez sur 👇 ';
-
+    const messageText =  `
+    Désirez-vous explorer notre service pendant 24 heures sans frais et
+    tester notre bot ? 🌟🔓  \n 
+    Pour l\'activer, appuyez sur (oui)👇 `;
     const quickReplies = [
-//{ content_type: 'text', title: 'Mode payant 💼', payload: 'oui' },
-     { content_type: 'text', title: 'Oui 🆓', payload: 'gratuit' }     
+     { content_type: 'text', title: 'Oui ✔️ ', payload: 'oui' },
+     { content_type: 'text', title: 'Tuto 📚', payload: 'tuto' }
+     //{ content_type: 'text', title: 'Notre Service', payload: 'service' }    
     ];
     await sendQuickReplyMessage(fbid, messageText, quickReplies);
   } catch (error) {

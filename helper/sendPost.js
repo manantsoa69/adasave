@@ -3,15 +3,14 @@ const { text } = require('express');
 const { createClient } = require('@supabase/supabase-js');
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_API_KEY);
 // Function to send a POST request to the FastAPI server
-async function generateResponse(fbid, question) {
+async function generateResponse( query) {
   try {
     // URL of the FastAPI server
-    const url = 'https://live-1-e9t5.onrender.com/generate/';
+    const url = 'https://live-1-e9t5.onrender.com/search';
 
     // Data to be sent in the request body
     const data = {
-      fbid: fbid,
-      question: question,
+        query: query,
     };
 
     // Send POST request
@@ -23,9 +22,9 @@ async function generateResponse(fbid, question) {
 
     // Extract the response_genai property from the response data
     const responseData = response.data;
-    const responseGenai = responseData.response_genaiput; 
-    //console.log(responseGenai);
+    const responseGenai = responseData.result; 
     
+
 
     // Return the response_genai text
     return responseGenai;
@@ -40,8 +39,8 @@ async function transletResponse(fbid, lastPrompt, payload) {
   console.log(payload);
   try {
     // URL of the FastAPI server
+   // const url = 'https://live-1-e9t5.onrender.com/translate/';
     const url = 'https://live-1-e9t5.onrender.com/translate/';
-
     // Data to be sent in the request body
     const data = {
       fbid: fbid,
