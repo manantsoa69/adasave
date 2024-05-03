@@ -99,7 +99,7 @@ router.post('/', async (req, res) => {
     const { Status, chathistory } = await checkSubscription(fbid);
 
     if (Status === 'C') { 
-      const functions = shuffle([googlechat3]);
+      const functions = shuffle([googlechat, googlechat1, googlechat2, googlechat3]);
       let result;
       for (const func of functions) {
         result = await func(chathistory, query, 'Chat');
@@ -137,7 +137,7 @@ router.post('/', async (req, res) => {
     } else if (Status === 'T') { 
       await selectLang(fbid);
     } else if (Status === 'L') { 
-      const functions = shuffle([ googlechat3]);
+      const functions = shuffle([googlechat, googlechat1, googlechat2, googlechat3]);
       let result;
       for (const func of functions) {
         result = await func(chathistory, query, 'Live');
